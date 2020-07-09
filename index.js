@@ -10,7 +10,7 @@ const path = require('path')
 const TOKEN = process.env.TOKEN;
 
 let coinObjects = []
-let timer = 1
+let timer = 60
 
 bot.login(TOKEN);
 
