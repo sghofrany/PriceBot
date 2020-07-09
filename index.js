@@ -5,7 +5,8 @@ const bot = new Discord.Client();
 
 const request = require('request')
 const jsonfile = require('jsonfile')
-const path = require('path')
+const path = require('path');
+const { captureRejectionSymbol } = require('events');
 
 const TOKEN = process.env.TOKEN;
 
@@ -36,8 +37,6 @@ bot.on('message', async function(message) {
         coin = coin.coin
 
         let response = await checkPrice(args[1]).catch(err => console.log(err))
-
-        console.log(response)
 
         coin.lastprice = coin.currentprice
         coin.currentprice = response
@@ -246,6 +245,8 @@ async function checkAllPrice() {
         }
 
     }
+
+    console.log(`[PriceChecker] Checking all ${coinObjects.length} prices.`)
 
 }
 
