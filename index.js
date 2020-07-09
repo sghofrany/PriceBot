@@ -37,6 +37,8 @@ bot.on('message', async function(message) {
 
         let response = await checkPrice(args[1]).catch(err => console.log(err))
 
+        console.log(response)
+
         coin.lastprice = coin.currentprice
         coin.currentprice = response
         coin.difference = ((coin.currentprice - coin.lastprice) / coin.currentprice) * 100
