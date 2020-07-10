@@ -24,11 +24,11 @@ bot.on('ready', function() {
 
 bot.on('message', async function(message) {
 
-    if(message.content.startsWith('!check')) {
+    if(message.content.startsWith('!check') || message.content.startsWith('!price') || message.content.startsWith('!p')) {
 
         let args = message.content.split(' ')
 
-        if(args.length < 2) return message.channel.send(`${message.author} Not enough arguments, !check <coin-name>`)
+        if(args.length < 2) return message.channel.send(`${message.author} Not enough arguments, !check,!price,!p <coin-name>`)
 
         let coin = getCoinObjectByName(args[1])
 
@@ -38,17 +38,7 @@ bot.on('message', async function(message) {
 
         let response = await checkPrice(args[1]).catch(err => console.log(err))
 
-        coin.lastprice = coin.currentprice
-        coin.currentprice = response
-        coin.difference = ((coin.currentprice - coin.lastprice) / coin.currentprice) * 100
-
-        if(coin.lastprice !== -1) {
-            
-            message.channel.send(priceCheckEmbed(coin))
-
-        } else {
-            message.channel.send(`Current Price: ${coin.currentprice}`)
-        }
+        message.channel.send(priceCheckEmbed(coin, response))
 
   
     }
@@ -63,9 +53,6 @@ bot.on('message', async function(message) {
 
         coinObjects.push({
             name: args[1],
-            lastprice: -1,
-            currentprice: -1,
-            difference: 0,
             limit: 0
         })
 
@@ -75,11 +62,11 @@ bot.on('message', async function(message) {
 
     }
 
-    if(message.content.startsWith('!remove')) {
+    if(message.content.startsWith('!remove') || message.content.startsWith('!r')) {
     
         let args = message.content.split(' ')
 
-        if(args.length < 2) return message.channel.send(`${message.author} Not enough arguments, !remove <coin-name>`)
+        if(args.length < 2) return message.channel.send(`${message.author} Not enough arguments, !remove,!r <coin-name>`)
 
         let coin = getCoinObjectByName(args[1])
 
@@ -157,9 +144,6 @@ function loadCoins() {
             for(var i = 0; i < obj.coins.length; i++) {
                 coinObjects.push({
                     name: obj.coins[i].name,
-                    lastprice: obj.coins[i].lastprice,
-                    currentprice: obj.coins[i].currentprice,
-                    difference: obj.coins[i].difference,
                     limit: obj.coins[i].limit
                 })
             }
@@ -174,16 +158,45 @@ function loadCoins() {
     })
 }
 
-function priceCheckEmbed(coin) {
+function priceCheckEmbed(coin, response) {
     return new Discord.MessageEmbed()
         .setColor('#09b82c')
         .setTitle(coin.name)
         .addFields([
-            { name: 'Current Price', value: `${coin.currentprice}`},
-            { name: 'Last Price', value: `${coin.lastprice}`},
-            { name: '% Change', value: `${Number((coin.difference).toFixed(3))}%`}
+            { name: 'Price', value: `${moneyFormat(response.price)}`},
+            { name: '1hr', value: `${response.per_1h}% ${getPriceEmoji(response.per_1h)}`},
+            { name: '24hr', value: `${response.per_24h}% ${getPriceEmoji(response.per_24h)}`},
+            { name: '7d', value: `${response.per_7d}% ${getPriceEmoji(response.per_7d)}`},
+            { name: '7d volume', value: `${moneyFormat(response.volume_7d)}`}
         ])  
         .setTimestamp()
+}
+
+function moneyFormat(price) {
+    var formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      });
+      
+      return formatter.format(price);
+}
+
+function getPriceEmoji(price) {
+
+    if(price <= -10) {
+        return ":face_vomiting:"
+    } else if(price > -10 && price <= -5) {
+        return ":face_with_hand_over_mouth:"
+    } else if(price > -5 && price <= 0) {
+        return ":slight_frown:"
+    } else if(price > 0 && price <= 5) {
+        return ":smiley:"
+    } else if(price > 5 && price <= 10) {
+        return ":money_mouth:"
+    }  else if(price > 10) {
+        return ":moneybag:"
+    }
+
 }
 
 function allCoinsEmbed() {
@@ -191,7 +204,7 @@ function allCoinsEmbed() {
     let fields = []
 
     fields.push({
-        name: `Coin Current-Price Limit`,
+        name: `Coin | Limit`,
         value: '\u200b'
     })
 
@@ -200,7 +213,7 @@ function allCoinsEmbed() {
         var coin = coinObjects[i]
 
         fields.push({
-            name: `${coin.name} ${coin.currentprice} ${coin.limit}`,
+            name: `${coin.name} | ${coin.limit}`,
             value: '\u200b'
         })
 
@@ -235,13 +248,10 @@ async function checkAllPrice() {
 
         let response = await checkPrice(coin.name).catch(err => console.log(err))
 
-        coin.lastprice = coin.currentprice
-        coin.currentprice = response
-        coin.difference = ((coin.currentprice - coin.lastprice) / coin.currentprice) * 100
+        console.log(`${coin.name} 1hr:${response.per_1h} 24hr:${response.per_24h} 7d:${response.per_7d} 7d_volume:${response.volume_7d}`)
 
-        if(coin.difference >= coin.limit) {
-            bot.channels.cache.get('730799009244905512').send('@everyone')
-            bot.channels.cache.get('730799009244905512').send(priceCheckEmbed(coin))
+        if( response.per_1h >= coin.limit ) {
+            bot.channels.cache.get('731175016468840450').send(priceCheckEmbed(coin, response))
         }
 
     }
@@ -274,8 +284,15 @@ function checkPrice(coin) {
             let quoteKey = Object.keys(jsonData.data[key].quote)
 
             let price = jsonData.data[key].quote[quoteKey[1]].price
-            
-            return resolve(price)
+
+            let per_1h = jsonData.data[key].quote[quoteKey[1]].percent_change_1h
+            let per_24h = jsonData.data[key].quote[quoteKey[1]].percent_change_24h
+            let per_7d = jsonData.data[key].quote[quoteKey[1]].percent_change_7d
+
+            let volume_7d = jsonData.data[key].quote[quoteKey[1]].volume_7d
+
+
+            return resolve({price: price, per_1h: per_1h, per_24h: per_24h, per_7d: per_7d, volume_7d: volume_7d})
         })
     })
 
