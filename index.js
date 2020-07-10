@@ -161,9 +161,9 @@ function loadCoins() {
 function priceCheckEmbed(coin, response) {
     return new Discord.MessageEmbed()
         .setColor('#09b82c')
-        .setTitle(coin.name)
+        .setTitle(`${coin.name} @everyone`)
         .addFields([
-            { name: 'Price', value: `${moneyFormat(response.price)}`},
+            { name: 'Price', value: `${response.price}`},
             { name: '1hr', value: `${response.per_1h}% ${getPriceEmoji(response.per_1h)}`},
             { name: '24hr', value: `${response.per_24h}% ${getPriceEmoji(response.per_24h)}`},
             { name: '7d', value: `${response.per_7d}% ${getPriceEmoji(response.per_7d)}`},
