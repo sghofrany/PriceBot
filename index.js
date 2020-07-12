@@ -284,13 +284,21 @@ function checkPrice(coin) {
 
             let quoteKey = Object.keys(jsonData.data[key].quote)
 
-            let price = jsonData.data[key].quote[quoteKey[1]].price
+            // let price = jsonData.data[key].quote[quoteKey[1]].price
 
-            let per_1h = jsonData.data[key].quote[quoteKey[1]].percent_change_1h
-            let per_24h = jsonData.data[key].quote[quoteKey[1]].percent_change_24h
-            let per_7d = jsonData.data[key].quote[quoteKey[1]].percent_change_7d
+            // let per_1h = jsonData.data[key].quote[quoteKey[1]].percent_change_1h
+            // let per_24h = jsonData.data[key].quote[quoteKey[1]].percent_change_24h
+            // let per_7d = jsonData.data[key].quote[quoteKey[1]].percent_change_7d
 
-            let volume_7d = jsonData.data[key].quote[quoteKey[1]].volume_7d
+            let price = jsonData.data[key].quote["2781"].price
+
+
+            let per_1h = jsonData.data[key].quote["2781"].percent_change_1h
+            let per_24h = jsonData.data[key].quote["2781"].percent_change_24h
+            let per_7d = jsonData.data[key].quote["2781"].percent_change_7d
+
+
+            let volume_7d = jsonData.data[key].quote["2781"].volume_7d
 
 
             return resolve({price: price, per_1h: per_1h, per_24h: per_24h, per_7d: per_7d, volume_7d: volume_7d})
