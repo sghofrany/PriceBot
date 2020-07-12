@@ -248,7 +248,7 @@ async function checkAllPrice() {
 
         let response = await checkPrice(coin.name).catch(err => console.log(err))
 
-        console.log(`${coin.name} 1hr:${response.per_1h} 24hr:${response.per_24h} 7d:${response.per_7d} 7d_volume:${response.volume_7d}`)
+        console.log(`${coin.name} price:${response.price} 1hr:${response.per_1h} 24hr:${response.per_24h} 7d:${response.per_7d} 7d_volume:${response.volume_7d}`)
 
         if( response.per_1h >= coin.limit ) {
             bot.channels.cache.get('731175016468840450').send("@everyone")
