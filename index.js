@@ -62,17 +62,6 @@ bot.on('message', async function(message) {
 
         jsonfile.writeFile(path.join(__dirname, 'coinlist.json'), {"coins": coinObjects}, function(err) {
             if(err) return console.log("Error while writing to json file")
-
-            let raw = fs.readFileSync('coinlist.json')
-            let d = JSON.parse(raw)
-
-            fs.readdir(testFolder, (err, files) => {
-                files.forEach(file => {
-                  console.log(file);
-                });
-              });
-
-            console.log(d)
         })
 
 
@@ -154,12 +143,6 @@ function run() {
 function loadCoins() {
     
     jsonfile.readFile(path.join(__dirname, 'coinlist.json'), function(error, obj) {
-
-        fs.readdir(testFolder, (err, files) => {
-            files.forEach(file => {
-              console.log(file);
-            });
-          });
 
         if(error) return console.log("[ReadFileError]", error)
 
