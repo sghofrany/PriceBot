@@ -132,6 +132,7 @@ function run() {
 
     }, 1000 * 60 * timer)
 
+    //tesitng
 }
 
 function loadCoins() {
