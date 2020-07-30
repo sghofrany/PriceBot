@@ -8,7 +8,7 @@ const jsonfile = require('jsonfile')
 const path = require('path');
 const { captureRejectionSymbol } = require('events');
 
-const testFolder = './app/';
+const testFolder = './';
 const fs = require('fs');
 
 
