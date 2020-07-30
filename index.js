@@ -8,6 +8,10 @@ const jsonfile = require('jsonfile')
 const path = require('path');
 const { captureRejectionSymbol } = require('events');
 
+const testFolder = './app/';
+const fs = require('fs');
+
+
 const TOKEN = process.env.TOKEN;
 
 let coinObjects = []
@@ -58,7 +62,15 @@ bot.on('message', async function(message) {
 
         jsonfile.writeFile(path.join(__dirname, 'coinlist.json'), {"coins": coinObjects}, function(err) {
             if(err) return console.log("Error while writing to json file")
+
+            fs.readdir(testFolder, (err, files) => {
+                files.forEach(file => {
+                  console.log(file);
+                });
+              });
+
         })
+
 
     }
 
