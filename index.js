@@ -147,7 +147,7 @@ function run() {
 
 function loadCoins() {
     
-    File(path.join(__dirname, 'coinlist.json'), function(error, obj) {
+    jsonfile.readFile(path.join(__dirname, 'coinlist.json'), function(error, obj) {
         
         if(error) return console.log("[ReadFileError]", error)
 
