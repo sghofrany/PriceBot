@@ -66,6 +66,12 @@ bot.on('message', async function(message) {
             let raw = fs.readFileSync('coinlist.json')
             let d = JSON.parse(raw)
 
+            fs.readdir(testFolder, (err, files) => {
+                files.forEach(file => {
+                  console.log(file);
+                });
+              });
+
             console.log(d)
         })
 
