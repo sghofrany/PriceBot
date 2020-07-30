@@ -1,1 +1,1 @@
-{"coins":[{"name":"bitcoin","lastprice":9268.58485655,"currentprice":9268.58485655,"difference":0,"limit":"5"},{"name":"cardano","lastprice":0.120641874002,"currentprice":0.120641874002,"difference":0,"limit":"5"},{"name":"ren","lastprice":0.0007406589813379834,"currentprice":0.0007406589813379834,"difference":0,"limit":"5"},{"name":"vechain","lastprice":0.0179291941149,"currentprice":0.0179291941149,"difference":0,"limit":"5"}]}
+{"coins":[{"name":"bitcoin","limit":"5"},{"name":"cardano","limit":"5"},{"name":"vechain","limit":"5"},{"name":"ren","limit":"1"}]}
