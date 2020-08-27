@@ -259,7 +259,7 @@ async function checkAllPrice() {
 
         console.log(`${coin.name} price:${response.price} 1hr:${response.per_1h} 24hr:${response.per_24h} 7d:${response.per_7d} 7d_volume:${response.volume_7d}`)
 
-        if( response.per_1h >= coin.limit ) {
+        if( Math.abs(response.per_1h) >= coin.limit ) {
             bot.channels.cache.get('731175016468840450').send("@everyone")
             bot.channels.cache.get('731175016468840450').send(priceCheckEmbed(coin, response))
         }
